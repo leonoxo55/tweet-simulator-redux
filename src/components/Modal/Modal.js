@@ -14,7 +14,6 @@ export default function Modal(props){
 
     // useSelector to acces a value in the store
     const isOpenModal = useSelector(state => state.modals.stateModalAddTweet);
-    console.log(isOpenModal);
     
 
     return (
