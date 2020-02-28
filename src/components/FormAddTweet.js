@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { validationFormAddTweetAction } from '../actions/validationsActions' 
+import { validationFormAddTweetAction } from '../actions/validationsActions';
+import { addTweetAction } from '../actions/tweetsActions';
+import { openCloseAddTweetModalAction } from '../actions/modalsActions';
+import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function FormAddTweet(){
 
@@ -13,6 +17,8 @@ export default function FormAddTweet(){
     //Init Dispatch
     const dispatch = useDispatch();
     const errorForm = state => dispatch(validationFormAddTweetAction(state));
+    const addTweet = state => dispatch(addTweetAction(state));
+    const closeModal = state => dispatch(openCloseAddTweetModalAction(state));
 
     //get validator state
     const errorFormValue = useSelector(state => state.validations.errorFormAddTweet);
@@ -31,11 +37,16 @@ export default function FormAddTweet(){
 
         if(!name || !tweet) {
             errorForm(true);
-            console.log('Todos los campos son obligatorios');
         }
         else{
             errorForm(false);
-            console.log('Tweet enviado correctamente');
+            addTweet({
+                id: uuidv4(),
+                name,
+                tweet,
+                date: moment()
+            });
+            closeModal(false);
         } 
         
         
