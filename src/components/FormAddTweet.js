@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Alert } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { validationFormAddTweetAction } from '../actions/validationsActions' 
 
 export default function FormAddTweet(){
 
@@ -7,6 +9,13 @@ export default function FormAddTweet(){
         name: '',
         tweet: ''
     })
+
+    //Init Dispatch
+    const dispatch = useDispatch();
+    const errorForm = state => dispatch(validationFormAddTweetAction(state));
+
+    //get validator state
+    const errorFormValue = useSelector(state => state.validations.errorFormAddTweet);
 
     const onChange = e => {
         setFormValue({
@@ -20,8 +29,12 @@ export default function FormAddTweet(){
 
         const {name, tweet} = formValue;
 
-        if(!name || !tweet) console.log('Todos los campos son obligatorios');
+        if(!name || !tweet) {
+            errorForm(true);
+            console.log('Todos los campos son obligatorios');
+        }
         else{
+            errorForm(false);
             console.log('Tweet enviado correctamente');
         } 
         
@@ -40,6 +53,10 @@ export default function FormAddTweet(){
                 <Form.Control as='textarea' name='tweet' row='3' placeholder='Escribe lo que quieras opinar' />
             </Form.Group>
             <Button variant='primary' type='submit'>Enviar Tweet</Button>
+            
+            {errorFormValue && (
+                <Alert variant='danger' className='mt-4'>Todos los campos son obligatorios</Alert>
+            )}
         </Form>
     )
 }
